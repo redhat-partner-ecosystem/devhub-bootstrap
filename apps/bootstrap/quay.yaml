@@ -4,7 +4,7 @@ metadata:
   name: quay-registry
   namespace: openshift-gitops
 spec:
-  project: sw-factory
+  project: devhub
   revisionHistoryLimit: 3
   syncPolicy:
     automated:
