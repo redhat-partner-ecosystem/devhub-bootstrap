@@ -1,0 +1,29 @@
+all:
+  vars:
+    name: devhub
+    namespace: devhub
+    namespace_quay: quay
+    
+    default_user: admin
+    default_user_pwd: admin321
+    default_user_email: admin@example.com
+    cluster_domain: "example.com"
+    
+    # GitHub (Enterprise)
+    github_endpoint: "https://partner-github.dxc.com"
+    github_client_id: "Y2E0NWY2MTgwYmFkZDMxZGNlZDM="
+    github_client_secret: "MWNiOGI5MWM3N2MxOTRhYWUxYmFlODFmZDUwMWU5OGZiZjc3ZjI4OA=="
+
+    # versions
+    #external_secrets_version: 0.9.2
+
+    # Quay Route. Can be overwritten with a fully qualified hostname.
+    # When empty the route will be quay.basedomain
+    #quay_registry_route: ""
+    #quay_registry_name: quay
+    #quay_display_name: "Quay"
+    
+    # external repos
+    #bootstrap_agnosticg_repo: https://github.com/treddy08/agnosticg.git
+    #bootstrap_agnosticg_repo: https://github.com/redhat-gpte-devopsautomation/agnosticg
+    #bootstrap_janus_bootstrap_repo: https://github.com/treddy08/janus-idp-bootstrap.git

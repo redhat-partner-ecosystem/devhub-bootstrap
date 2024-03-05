@@ -1,0 +1,39 @@
+kind: AppProject
+apiVersion: argoproj.io/v1alpha1
+metadata:
+  name: devhub
+  namespace: openshift-gitops
+spec:
+  clusterResourceWhitelist:
+    - group: "*"
+      kind: "*"
+  destinations:
+    - namespace: devhub
+      server: "*"
+    - namespace: quay
+      server: "*"
+  sourceRepos:
+    - "*"
+status: {}
+---
+kind: Application
+apiVersion: argoproj.io/v1alpha1
+metadata:
+  name: devhub
+  namespace: openshift-gitops
+spec:
+  project: devhub
+  revisionHistoryLimit: 3
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: true
+  source:
+    directory:
+      recurse: false
+    path: apps/devhub
+    repoURL: https://github.com/redhat-partner-ecosystem/devhub-bootstrap
+    targetRevision: develop
+  destination:
+    namespace: devhub
+    server: https://kubernetes.default.svc

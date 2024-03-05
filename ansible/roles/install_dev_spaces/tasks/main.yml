@@ -1,0 +1,8 @@
+- name: Create GitHub OAuth config
+  k8s:
+    state: present
+    definition: "{{ lookup('template', 'github-oauth-config.yml.j2' ) | from_yaml }}"
+
+- name: Create Dev Spaces application
+  shell: >-
+    oc apply -f ../../apps/bootstrap/quay.yaml
