@@ -5,4 +5,4 @@
 
 - name: Create Dev Spaces application
   shell: >-
-    oc apply -f ../../apps/bootstrap/quay.yaml
+    oc apply -f ../../apps/bootstrap/devspaces.yaml
