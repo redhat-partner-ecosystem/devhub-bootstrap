@@ -4,27 +4,29 @@ Install and configure the Developer Hub Infrastructure
 
 ## TL;DR
 
-### Install the operators
+### Prerequisites
 
-Subscribe to the operators:
+* You are logged in to the OCP using the OpenShift CLI
+* A GitHub OAuth application. See ["Setting up the GitHub OAuth App"](https://access.redhat.com/documentation/en-us/red_hat_openshift_dev_spaces/3.11/html/administration_guide/configuring-devspaces#configuring-oauth-2-for-github-setting-up-the-github-oauth-app)
 
-```shell
-make install-operators
-```
+### Installation
 
-Verify that the default GitOps instance is up-and-running:
+#### Preparation
 
-```shell
-oc get pods -n openshift-gitops
-```
+Make a copy of file `ansible/inventory/main.yml.example` and rename it to `ansible/inventory/main.yml`. Review the file and chnage values.
 
-### Bootstrap the default Software Factory apps
+#### Run the bootstrap playbook
+
+Make sure you are logged into OCP using the OpenShift CLI. Execute the playbook:
 
 ```shell
 make bootstrap
 ```
 
-### Access Red Hat GitOps
+This might take several minutes to complete.
+
+
+## Access Red Hat GitOps
 
 Extract the Red Hat GitOps admin password:
 
@@ -38,8 +40,14 @@ Get the Red Hat GitOps routes:
 oc get route openshift-gitops-server -n openshift-gitops
 ```
 
-**Note:** Login with `Username` and `Password` and not with SSO ! 
+**Note:** Login with `Username` and `Password` and not with OpenShift SSO ! 
 
 
-### Access the Quay Container Registry
+## References
+
+* https://access.redhat.com/documentation/en-us/red_hat_quay/3.10
+* https://access.redhat.com/documentation/en-us/red_hat_openshift_dev_spaces/3.11
+* https://access.redhat.com/documentation/en-us/red_hat_developer_hub/1.0
+* https://access.redhat.com/documentation/en-us/red_hat_plug-ins_for_backstage/2.0
+
 
