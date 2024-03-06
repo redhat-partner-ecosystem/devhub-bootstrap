@@ -19,7 +19,7 @@ Install and configure a basic Developer Hub Infrastructure. The following Red Ha
 
 #### Preparation
 
-Make a copy of file `ansible/inventory/main.yml.example` and rename it to `ansible/inventory/main.yml`. Review the file and change values to match your requirements.
+Make a copy of file `ansible/inventory/main.yml.example` and rename it to `ansible/inventory/main.yml`. Review the file and change the values according to your environment.
 
 #### Run the bootstrap playbook
 
@@ -30,7 +30,6 @@ make bootstrap
 ```
 
 This might take several minutes to complete.
-
 
 ## Access Red Hat GitOps
 

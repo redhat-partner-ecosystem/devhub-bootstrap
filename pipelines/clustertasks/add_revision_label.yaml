@@ -1,0 +1,30 @@
+kind: ClusterTask
+apiVersion: tekton.dev/v1
+metadata:
+  name: add-revision-label
+spec:
+  description: >-
+    Add a label (default 'rev') to a resource with a reference to a git revision.
+  params:
+    - name: APP_NAME
+      type: string
+    - name: GIT_REVISION
+      type: string
+    - name: NAMESPACE
+      type: string
+    - name: RESOURCE
+      type: string
+    - name: LABEL
+      type: string
+      default: 'rev'
+  steps:
+    - name: tag-image
+      image: quay.io/openshift/origin-cli:latest
+      script: |
+        #!/usr/bin/env bash
+
+        #set -x
+
+        echo "adding label to deployment config $(params.APP_NAME)"
+
+        oc label $(params.RESOURCE) $(params.APP_NAME) "$(params.LABEL)=$(params.GIT_REVISION)" --overwrite -n "$(params.NAMESPACE)"

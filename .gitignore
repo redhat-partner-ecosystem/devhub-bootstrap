@@ -23,4 +23,5 @@ workspace/
 secrets/
 stuff.md
 hack.md
+hack.yml
 node_modules

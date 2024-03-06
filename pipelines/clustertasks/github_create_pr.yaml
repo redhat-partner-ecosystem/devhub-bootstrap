@@ -1,0 +1,188 @@
+apiVersion: tekton.dev/v1
+kind: ClusterTask
+metadata:
+  name: github-create-pr
+spec:
+  description: >-
+    Creates a pull request in the app's config repo in order to trigger a rollout by merging said PR.
+  params:
+    - name: CONFIG_GIT_REPO
+      type: string
+      description: The config repository url
+    - name: PATH_CONTEXT
+      type: string
+      description: The relative path in CONFIG_GIT_REPO
+    - name: GIT_REVISION
+      type: string
+      description: The git revision of the source repo to deploy
+    - name: GIT_BRANCH_REF
+      type: string
+      description: The source repos branch name
+    - name: GIT_PUSHER_NAME
+      type: string
+    - name: GIT_PUSHER_EMAIL
+      type: string
+    - name: GIT_COMMIT_MESSAGE
+      type: string
+    - name: IMAGE_DIGEST
+      type: string
+      description: The digest of the image stream that matches the GIT_REVISION
+  stepTemplate:
+    envFrom:
+      - secretRef:
+          name: github-secrets
+  steps:
+    - name: git-checkout-repo
+      image: image-registry.openshift-image-registry.svc:5000/devsecops-config/gitops-cli:1.0.0
+      workingDir: $(workspaces.manifest.path)
+      script: |
+        #!/usr/bin/env bash
+
+        #set -x
+
+        # setup gh cli
+        gh auth setup-git
+
+        # extract the branch ref
+        IFS="/" read -a branchref <<< "$(params.GIT_BRANCH_REF)"
+        BRANCH="${branchref[-1]}"
+
+        # clone the repo
+        echo "-> cloning $(params.CONFIG_GIT_REPO)"
+
+        rm -rf manifest-workdir
+
+        git clone $(params.CONFIG_GIT_REPO) manifest-workdir
+
+        cd manifest-workdir
+
+        # setup git
+        git config --global user.email "$(params.GIT_PUSHER_EMAIL)"
+        git config --global user.name "$(params.GIT_PUSHER_NAME)"
+        git config pull.rebase true
+
+        # checkout or create the correct baseline
+        
+        #if [ "$BRANCH" != main ]; then
+        #  
+        #  REMOTE=`git branch -a | grep $BRANCH || true`
+        #  
+        #  if [ -z $REMOTE ]; then
+        #    git checkout -b $BRANCH
+        #
+        #    git push origin $BRANCH
+        #  else
+        #    git checkout $BRANCH
+        #  fi
+        #
+        #fi
+
+        # create a new branch for the PR
+
+        REVISION=$(params.GIT_REVISION)
+        PR="pr-${REVISION:0:7}-$BRANCH"
+
+        git checkout -b $PR
+
+      volumeMounts:
+        - mountPath: /gen-source
+          name: gen-source
+
+    - name: create-patch
+      image: image-registry.openshift-image-registry.svc:5000/devsecops-config/gitops-cli:1.0.0
+      workingDir: $(workspaces.manifest.path)
+      script: |
+        #!/usr/bin/env bash
+
+        #set -x
+
+        # extract the branch ref
+        IFS="/" read -a branchref <<< "$(params.GIT_BRANCH_REF)"
+        BRANCH="${branchref[-1]}"
+
+        cd manifest-workdir
+
+        # write a manifest file
+        echo "$BRANCH $(params.GIT_REVISION) $(params.IMAGE_DIGEST)" > ./$(params.PATH_CONTEXT)/$BRANCH/manifest.txt
+
+        # patch the deployment descriptor
+        sed 's/nodejs-gitops:main/nodejs-gitops:$(params.GIT_REVISION)/g' ./$(params.PATH_CONTEXT)/$BRANCH/app.tmpl > ./$(params.PATH_CONTEXT)/$BRANCH/app.yaml
+
+      volumeMounts:
+        - mountPath: /gen-source
+          name: gen-source
+
+    - name: git-log
+      image: image-registry.openshift-image-registry.svc:5000/devsecops-config/gitops-cli:1.0.0
+      workingDir: $(workspaces.manifest.path)
+      script: |
+        #!/usr/bin/env bash
+
+        # extract the branch ref
+        IFS="/" read -a branchref <<< "$(params.GIT_BRANCH_REF)"
+        BRANCH="${branchref[-1]}"
+
+        cd $(workspaces.source.path)
+
+        git log --all --oneline > "$(workspaces.manifest.path)/manifest-workdir/$(params.PATH_CONTEXT)/$BRANCH/gitlog.txt"
+        
+      volumeMounts:
+        - mountPath: /gen-source
+          name: gen-source
+
+    - name: create-pull-request
+      image: image-registry.openshift-image-registry.svc:5000/devsecops-config/gitops-cli:1.0.0
+      workingDir: $(workspaces.manifest.path)
+      script: |
+        #!/usr/bin/env bash
+
+        #set -x
+
+        # extract the branch ref
+        IFS="/" read -a branchref <<< "$(params.GIT_BRANCH_REF)"
+
+        BRANCH="${branchref[-1]}"
+        REVISION=$(params.GIT_REVISION)
+        PR="pr-${REVISION:0:7}-$BRANCH"
+
+        # setup git
+        cd manifest-workdir
+
+        # setup gh CLI
+        gh auth setup-git
+
+        # setup git
+        git config --global user.email "$(params.GIT_PUSHER_EMAIL)"
+        git config --global user.name "$(params.GIT_PUSHER_NAME)"
+        git config pull.rebase true
+
+        # commit and push to branch
+        echo "-> pushing to branch $PR"
+
+        COMMIT_MSG="$PR"
+        AUDIT_MSG="$(date +%s): $PR $(params.GIT_PUSHER_NAME)/$(params.GIT_PUSHER_EMAIL)  $REVISION   $(params.IMAGE_DIGEST)  $(params.GIT_COMMIT_MESSAGE)"
+
+        git add ./$(params.PATH_CONTEXT)/$BRANCH/gitlog.txt
+
+        git add ./$(params.PATH_CONTEXT)/$BRANCH/manifest.txt
+
+        git commit -am "$COMMIT_MSG"
+
+        git push origin $PR
+
+        # create a PR
+        #gh pr create --base $BRANCH --head $PR --title "$COMMIT_MSG" --body "$AUDIT_MSG"
+        gh pr create --base main --head $PR --title "$COMMIT_MSG" --body "$AUDIT_MSG"
+
+      volumeMounts:
+        - mountPath: /gen-source
+          name: gen-source
+
+  volumes:
+    - emptyDir: {}
+      name: gen-source
+  workspaces:
+    - mountPath: /workspace/manifest
+      name: manifest
+    - mountPath: /workspace/source
+      name: source

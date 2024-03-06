@@ -1,0 +1,37 @@
+kind: ClusterTask
+apiVersion: tekton.dev/v1
+metadata:
+  name: github-create-secscan-issues
+spec:
+  description: >-
+    Create GitHub issues from vulnarabilities discovered during a security scan
+  params:
+    - name: GIT_BRANCH_REF
+      type: string
+      description: "The GitHub ref from the webhook payload (property body.ref)"
+    - name: GIT_REPO_FULL_NAME
+      type: string
+    - name: NAMESPACE
+      type: string
+    - name: IMAGE_NAME
+      type: string
+    - name: TAG
+      type: string
+      default: 'latest'
+  stepTemplate:
+    envFrom:
+      - configMapRef:
+          name: pipeline-env-configmap
+      - secretRef:
+          name: pipeline-env-secrets
+  steps:
+    - name: secscan-report
+      image: image-registry.openshift-image-registry.svc:5000/devsecops-config/gitops-cli:1.0.0
+      script: |
+        #!/usr/bin/env bash
+
+        # extract the branch ref
+        IFS="/" read -a branchref <<< "$(params.GIT_BRANCH_REF)"
+        BRANCH="${branchref[-1]}"
+
+        python secscan.py $(params.NAMESPACE) $(params.IMAGE_NAME) $(params.TAG) $(params.GIT_REPO_FULL_NAME)
