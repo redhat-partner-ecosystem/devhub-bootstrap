@@ -3,5 +3,6 @@
 
   roles:
     - role: ../roles/env
-    - role: ../roles/install_quay_registry
-    - role: ../roles/install_dev_spaces
+    - role: ../roles/install_operators
+    #- role: ../roles/install_quay_registry
+    #- role: ../roles/install_dev_spaces

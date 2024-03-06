@@ -25,6 +25,6 @@
   set_fact:
     cluster_domain: "{{ r_ingress_config.resources[0].spec.domain }}"
 
-#- name: DEBUG
-#  debug:
-#    msg: "{{ cluster_domain }}"
+- name: DEBUG
+  debug:
+    msg: "{{ cluster_domain }}"

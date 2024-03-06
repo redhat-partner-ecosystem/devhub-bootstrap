@@ -1,0 +1,4 @@
+- name: Install Operators
+  shell: >-
+    oc apply -f ../../operators/
+
