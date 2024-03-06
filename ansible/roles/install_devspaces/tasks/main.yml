@@ -1,0 +1,7 @@
+- name: Create Dev Spaces application
+  k8s:
+    state: present
+    definition: "{{ lookup('template', item ) | from_yaml }}"
+  loop:
+    - github-oauth-config.yml.j2
+    - openshift-devspaces-instance.yml.j2

@@ -2,7 +2,7 @@ apiVersion: org.eclipse.che/v2
 kind: CheCluster
 metadata:
   name: devspaces
-  namespace: devhub
+  namespace: {{ namespace_devspaces }}
 spec:
   components:
     cheServer:
@@ -12,8 +12,7 @@ spec:
     dashboard:
       headerMessage:
         show: true
-        text: >-
-          Some more intelligent text goes here ...
+        text: {{ dashboard_description }}
     
     devWorkspace: {}
 
@@ -35,7 +34,8 @@ spec:
   devEnvironments:
     startTimeoutSeconds: 300
     secondsOfRunBeforeIdling: -1
-    maxNumberOfWorkspacesPerUser: -1
+    maxNumberOfWorkspacesPerUser: {{ workspaces_per_user }}
+    maxNumberOfRunningWorkspacesPerUser: {{ running_workspaces_per_user }}
     containerBuildConfiguration:
       openShiftSecurityContextConstraint: container-build
     disableContainerBuildCapabilities: true
@@ -43,7 +43,7 @@ spec:
     defaultComponents:
       - container:
           sourceMapping: /projects
-          image: registry.redhat.io/devspaces/udi-rhel8:3.11
+          image: {{ default_workspace_container_image }}
           cpuRequest: "1"
           memoryRequest: "1Gi"
           cpuLimit: "2"
@@ -52,8 +52,6 @@ spec:
     defaultNamespace:
       autoProvision: true
       template: <username>-devspaces
-    #nodeSelector:
-    #  type: "devspaces"
     secondsOfInactivityBeforeIdling: 1800
     storage:
       pvcStrategy: per-user

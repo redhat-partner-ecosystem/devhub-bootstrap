@@ -1,0 +1,12 @@
+- name: Install all Operators
+  shell: >-
+    oc apply -f ../../operators/
+
+- name: Create default namespaces
+  k8s:
+    state: present
+    definition: "{{ lookup('template', item ) | from_yaml }}"
+  loop:
+  - namespace_devhub.yml.j2
+  - namespace_devspaces.yml.j2
+  - namespace_quay.yml.j2

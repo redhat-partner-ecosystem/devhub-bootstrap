@@ -2,7 +2,7 @@ kind: Secret
 apiVersion: v1
 metadata:
   name: github-oauth-config
-  namespace: {{ namespace }}
+  namespace: {{ namespace_devspaces }}
   labels:
     app.kubernetes.io/part-of: che.eclipse.org
     app.kubernetes.io/component: oauth-scm-configuration

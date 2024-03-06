@@ -1,10 +1,12 @@
 all:
   vars:
+    # default namespaces
     namespace_devspaces: devspaces
     namespace_quay: quay-enterprise
     namespace_devhub: devhub
     namespace_gitops: openshift-gitops
     
+    # default users
     default_user: admin
     default_user_pwd: admin321
     default_user_email: admin@example.com
@@ -13,10 +15,17 @@ all:
     quay_user_pwd: admin321
     quay_user_email: admin@example.com
 
-    cluster_domain: "example.com"
-    
-    # GitHub (Enterprise)
-    github_endpoint: "https://github.com"
+    # Dev Spaces configuration
+    dashboard_description: "Software Factory"
+    workspaces_per_user: -1
+    running_workspaces_per_user: 1
+    default_workspace_container_image: "registry.redhat.io/devspaces/udi-rhel8:3.11"
+
+    # Dev Spaces - GitHub (Enterprise)
+    github_endpoint: "https://partner-github.dxc.com"
     github_app_id: ""
-    github_client_id: "xyz"
-    github_client_secret: "xyz"
+    github_client_id: "xyz="
+    github_client_secret: "xyz="
+
+    # placeholders, might be overridden in playbooks
+    cluster_domain: "example.com"
