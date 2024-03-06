@@ -4,5 +4,5 @@
   roles:
     - role: ../roles/env
     - role: ../roles/bootstrap
-    #- role: ../roles/install_quay_registry
+    - role: ../roles/install_quay_registry
     - role: ../roles/install_devspaces

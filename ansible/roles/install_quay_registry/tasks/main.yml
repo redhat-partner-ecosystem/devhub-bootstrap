@@ -1,11 +1,13 @@
+- name: Quay Registry configuration
+  shell: |
+    oc create secret generic -n "{{ namespace_quay }}" --from-file config.yaml=../roles/install_quay_registry/templates/config.yaml quay-init-config-bundle
 
-- name: Create Quay application
-  shell: >-
-    oc create secret generic -n openshift-operators --from-file config.yaml=./apps/quay/config.yaml quay-init-config-bundle
-    
-    oc create secret generic -n "{{ namespace_quay }}" --from-file config.yaml=../../apps/quay/config.yaml quay-init-config-bundle
-    
-    oc apply -f ../../apps/bootstrap/quay.yaml
+- name: Create Quay Registry application
+  k8s:
+    state: present
+    definition: "{{ lookup('template', item ) | from_yaml }}"
+  loop:
+    - quay-registry.yml.j2
 
 - name: Wait for Quay Registry to be available
   k8s_info:
@@ -22,7 +24,7 @@
 
 - name: Set Quay Registry route hostname
   set_fact:
-    _quay_registry_route: "quay-registry-quay-quay.{{ cluster_domain }}"
+    _quay_registry_route: "quay-registry-quay-{{ namespace_quay }}.{{ cluster_domain }}"
 
 - name: Wait for API to be available
   uri:
@@ -39,9 +41,9 @@
     url: "https://{{ _quay_registry_route }}/api/v1/user/initialize"
     method: POST
     body:
-      username: "{{ default_user }}"
-      password: "{{ default_user_pwd }}"
-      email: "{{ default_user_email }}"
+      username: "{{ quay_user }}"
+      password: "{{ quay_user_pwd }}"
+      email: "{{ quay_user_email }}"
       access_token: "true"
     body_format: json
     validate_certs: false

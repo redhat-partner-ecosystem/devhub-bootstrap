@@ -1,5 +1,5 @@
 - name: Install all Operators
-  shell: >-
+  shell: |
     oc apply -f ../../operators/
 
 - name: Create default namespaces
