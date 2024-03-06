@@ -1,6 +1,12 @@
 # Developer Hub Templates
 
-Install and configure the Developer Hub Infrastructure
+Install and configure a basic Developer Hub Infrastructure. The following Red Hat products are used:
+
+* Red Hat OpenShift Dev Spaces
+* Red Hat Developer Hub (WIP)
+* Red Hat OpenShift GitOps
+* Red Hat OpenShift Pipelines
+* Red Hat Quay
 
 ## TL;DR
 
@@ -13,7 +19,7 @@ Install and configure the Developer Hub Infrastructure
 
 #### Preparation
 
-Make a copy of file `ansible/inventory/main.yml.example` and rename it to `ansible/inventory/main.yml`. Review the file and chnage values.
+Make a copy of file `ansible/inventory/main.yml.example` and rename it to `ansible/inventory/main.yml`. Review the file and change values to match your requirements.
 
 #### Run the bootstrap playbook
 
