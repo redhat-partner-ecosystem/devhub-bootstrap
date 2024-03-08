@@ -10,11 +10,8 @@ RUN INSTALL_PKGS="git unzip wget which" && \
   rpm -V $INSTALL_PKGS && \
   yum -y clean all --enablerepo='*'
 
-RUN which pip
-
 # Upgrade Pip
-#RUN pip list
-#RUN python3.9 -m pip3 install --upgrade pip3
+RUN pip install --upgrade pip
 
 # Create a Python virtual environment for use by any application
 #RUN python3.9 -m venv ${APP_ROOT} && \
@@ -46,8 +43,8 @@ RUN curl -sSL -o /usr/local/bin/argocd https://github.com/argoproj/argo-cd/relea
 # Add custom scripts / code
 COPY ./scripts ${APP_ROOT}/src
 
-
-# Install python dependencies
-RUN ${APP_ROOT}/bin/pip install -r ${APP_ROOT}/src/requirements.txt
+# Install python dependencies ${APP_ROOT}/bin/
+RUN pip install -r ${APP_ROOT}/src/requirements.txt
+RUN pip list
 
 USER 1001
