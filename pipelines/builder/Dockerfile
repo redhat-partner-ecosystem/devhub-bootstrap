@@ -37,6 +37,7 @@ RUN curl -sSL -o /usr/local/bin/argocd https://github.com/argoproj/argo-cd/relea
 COPY ./scripts ${APP_ROOT}/src
 
 # Install python dependencies ${APP_ROOT}/bin/
-RUN pip install -r ${APP_ROOT}/src/requirements.txt
+RUN pip install -r ${APP_ROOT}/src/requirements.txt && \
+  pip list
 
 USER 1001

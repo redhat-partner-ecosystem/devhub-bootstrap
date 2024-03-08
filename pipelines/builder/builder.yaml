@@ -2,13 +2,13 @@ kind: BuildConfig
 apiVersion: build.openshift.io/v1
 metadata:
   name: gitops-cli
-  #namespace: devsecops-config
+  #namespace: devhub-bootstrap
   annotations:
     description: base image for gitops pipeline tasks
 spec:
   source:
     git:
-      ref: develop
+      ref: main
       uri: "https://github.com/redhat-partner-ecosystem/devhub-bootstrap"
     contextDir: pipelines/builder
     type: Git
@@ -29,7 +29,7 @@ kind: ImageStream
 apiVersion: image.openshift.io/v1
 metadata:
   name: gitops-cli
-  #namespace: devsecops-config
+  #namespace: devhub-bootstrap
   annotations:
     description: base image for pipeline tasks
 spec:
