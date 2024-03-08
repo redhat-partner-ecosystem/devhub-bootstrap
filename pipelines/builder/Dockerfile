@@ -10,6 +10,8 @@ RUN INSTALL_PKGS="git unzip wget which" && \
   rpm -V $INSTALL_PKGS && \
   yum -y clean all --enablerepo='*'
 
+RUN which pip
+
 # Upgrade Pip
 #RUN pip list
 #RUN python3.9 -m pip3 install --upgrade pip3
@@ -31,7 +33,7 @@ RUN curl -o /usr/local/bin/kubectl -LO "https://dl.k8s.io/release/$(curl -L -s h
 
 # Install the Tekton CLI 'tkn'
 # see https://tekton.dev/docs/cli/
-RUN curl -LO "https://github.com/tektoncd/cli/releases/download/v{TEKTON_VERSION}/tkn_${TEKTON_VERSION}_Linux_x86_64.tar.gz" && \
+RUN curl -LO "https://github.com/tektoncd/cli/releases/download/v${TEKTON_VERSION}/tkn_${TEKTON_VERSION}_Linux_x86_64.tar.gz" && \
   tar xvzf tkn_${TEKTON_VERSION}_Linux_x86_64.tar.gz -C /usr/local/bin/ tkn && \
   chmod +x /usr/local/bin/tkn && \
   rm tkn_${TEKTON_VERSION}_Linux_x86_64.tar.gz
@@ -44,7 +46,6 @@ RUN curl -sSL -o /usr/local/bin/argocd https://github.com/argoproj/argo-cd/relea
 # Add custom scripts / code
 COPY ./scripts ${APP_ROOT}/src
 
-RUN which pip
 
 # Install python dependencies
 RUN ${APP_ROOT}/bin/pip install -r ${APP_ROOT}/src/requirements.txt
