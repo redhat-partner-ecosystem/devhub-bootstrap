@@ -8,7 +8,7 @@ metadata:
 spec:
   source:
     git:
-      ref: main
+      ref: develop
       uri: "https://github.com/redhat-partner-ecosystem/devhub-bootstrap"
     contextDir: pipelines/builder
     type: Git
