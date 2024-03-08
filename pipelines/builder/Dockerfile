@@ -1,4 +1,3 @@
-#FROM registry.access.redhat.com/ubi9/s2i-core:1-474
 FROM registry.access.redhat.com/ubi9/python-39:1-172
 
 USER root
@@ -12,12 +11,6 @@ RUN INSTALL_PKGS="git unzip wget which" && \
 
 # Upgrade Pip
 RUN pip install --upgrade pip
-
-# Create a Python virtual environment for use by any application
-#RUN python3.9 -m venv ${APP_ROOT} && \
-#  chown -R 1001:0 ${APP_ROOT} && \
-#  fix-permissions ${APP_ROOT} -P && \
-#  rpm-file-permissions
 
 # Install the GitHub CLI 'gh'
 RUN dnf config-manager --add-repo https://cli.github.com/packages/rpm/gh-cli.repo && \
@@ -45,6 +38,5 @@ COPY ./scripts ${APP_ROOT}/src
 
 # Install python dependencies ${APP_ROOT}/bin/
 RUN pip install -r ${APP_ROOT}/src/requirements.txt
-RUN pip list
 
 USER 1001
