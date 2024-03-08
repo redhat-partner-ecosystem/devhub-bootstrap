@@ -1,37 +1,24 @@
-FROM registry.access.redhat.com/ubi9/s2i-core:1-474
+#FROM registry.access.redhat.com/ubi9/s2i-core:1-474
+FROM registry.access.redhat.com/ubi9/python-39:1-172
 
 USER root
 
-ENV PYTHON_VERSION=3.9 \
-    PATH=$HOME/.local/bin/:$PATH \
-    PYTHONUNBUFFERED=1 \
-    PYTHONIOENCODING=UTF-8 \
-    LC_ALL=en_US.UTF-8 \
-    LANG=en_US.UTF-8 \
-    PIP_NO_CACHE_DIR=off \
-    TEKTON_VERSION=0.35.1
+ENV TEKTON_VERSION=0.35.1
 
-# removed: python39 python39-devel python39-setuptools python39-pip
-
-RUN INSTALL_PKGS="git \
-  unzip \
-  wget \
-  which \
-  nss_wrapper \
-  python3-pip" && \
+RUN INSTALL_PKGS="git unzip wget which" && \
   yum install -y --setopt=tsflags=nodocs $INSTALL_PKGS && \
   rpm -V $INSTALL_PKGS && \
   yum -y clean all --enablerepo='*'
 
 # Upgrade Pip
 #RUN pip list
-RUN python3.9 -m pip3 install --upgrade pip3
+#RUN python3.9 -m pip3 install --upgrade pip3
 
 # Create a Python virtual environment for use by any application
-RUN python3.9 -m venv ${APP_ROOT} && \
-  chown -R 1001:0 ${APP_ROOT} && \
-  fix-permissions ${APP_ROOT} -P && \
-  rpm-file-permissions
+#RUN python3.9 -m venv ${APP_ROOT} && \
+#  chown -R 1001:0 ${APP_ROOT} && \
+#  fix-permissions ${APP_ROOT} -P && \
+#  rpm-file-permissions
 
 # Install the GitHub CLI 'gh'
 RUN dnf config-manager --add-repo https://cli.github.com/packages/rpm/gh-cli.repo && \
@@ -57,7 +44,9 @@ RUN curl -sSL -o /usr/local/bin/argocd https://github.com/argoproj/argo-cd/relea
 # Add custom scripts / code
 COPY ./scripts ${APP_ROOT}/src
 
+RUN which pip
+
 # Install python dependencies
-RUN pip install -r ${APP_ROOT}/src/requirements.txt
+RUN ${APP_ROOT}/bin/pip install -r ${APP_ROOT}/src/requirements.txt
 
 USER 1001
