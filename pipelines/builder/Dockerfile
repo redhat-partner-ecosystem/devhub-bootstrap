@@ -22,6 +22,7 @@ RUN INSTALL_PKGS="git \
   yum -y clean all --enablerepo='*'
 
 # Upgrade Pip
+RUN which pip
 RUN python3.9 -m pip3 install --upgrade pip3
 
 # Create a Python virtual environment for use by any application
