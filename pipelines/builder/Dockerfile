@@ -16,8 +16,8 @@ RUN INSTALL_PKGS="git \
   unzip \
   wget \
   which \
-  nss_wrapper \
-  yum install -y --setopt=tsflags=nodocs $INSTALL_PKGS" && \
+  nss_wrapper" && \
+  yum install -y --setopt=tsflags=nodocs $INSTALL_PKGS && \
   rpm -V $INSTALL_PKGS && \
   yum -y clean all --enablerepo='*'
 
