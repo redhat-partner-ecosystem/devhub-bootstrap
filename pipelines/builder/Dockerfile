@@ -12,7 +12,7 @@ ENV PATH=$HOME/.local/bin/:$PATH \
 
 # removed: python39 python39-devel python39-setuptools python39-pip
 
-RUN pip3.9 list
+RUN python3.9 --version
 RUN python3.9 -m pip3 install --upgrade pip3
 
 RUN INSTALL_PKGS="git \
