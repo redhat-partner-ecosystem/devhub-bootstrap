@@ -50,9 +50,14 @@ oc get route openshift-gitops-server -n openshift-gitops
 
 ## References
 
-* https://access.redhat.com/documentation/en-us/red_hat_quay/3.10
+### GitOps and Pipelines
+* https://access.redhat.com/documentation/en-us/red_hat_openshift_gitops/1.11
+* https://access.redhat.com/documentation/en-us/red_hat_openshift_pipelines/1.14
 * https://access.redhat.com/documentation/en-us/red_hat_openshift_dev_spaces/3.11
+
+### Dev Spaces
 * https://access.redhat.com/documentation/en-us/red_hat_developer_hub/1.0
 * https://access.redhat.com/documentation/en-us/red_hat_plug-ins_for_backstage/2.0
 
-
+### Container Registry
+* https://access.redhat.com/documentation/en-us/red_hat_quay/3.10
