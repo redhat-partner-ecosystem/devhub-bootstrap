@@ -2,7 +2,8 @@ FROM registry.access.redhat.com/ubi9/s2i-core:1-474
 
 USER root
 
-ENV PATH=$HOME/.local/bin/:$PATH \
+ENV PYTHON_VERSION=3.9 \
+    PATH=$HOME/.local/bin/:$PATH \
     PYTHONUNBUFFERED=1 \
     PYTHONIOENCODING=UTF-8 \
     LC_ALL=en_US.UTF-8 \
@@ -17,7 +18,7 @@ RUN INSTALL_PKGS="git \
   wget \
   which \
   nss_wrapper \
-  python39-pip" && \
+  python3-pip" && \
   yum install -y --setopt=tsflags=nodocs $INSTALL_PKGS && \
   rpm -V $INSTALL_PKGS && \
   yum -y clean all --enablerepo='*'
