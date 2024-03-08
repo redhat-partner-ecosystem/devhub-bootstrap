@@ -12,21 +12,19 @@ ENV PATH=$HOME/.local/bin/:$PATH \
 
 # removed: python39 python39-devel python39-setuptools python39-pip
 
-RUN python3.9 --version
-RUN python3.9 -m pip3 install --upgrade pip3
-
 RUN INSTALL_PKGS="git \
   unzip \
   wget \
   which \
-  nss_wrapper" && \
+  nss_wrapper \
+  python39-pip" && \
   yum install -y --setopt=tsflags=nodocs $INSTALL_PKGS && \
   rpm -V $INSTALL_PKGS && \
   yum -y clean all --enablerepo='*'
 
 # Upgrade Pip
 #RUN pip list
-#RUN python3.9 -m pip3 install --upgrade pip3
+RUN python3.9 -m pip3 install --upgrade pip3
 
 # Create a Python virtual environment for use by any application
 RUN python3.9 -m venv ${APP_ROOT} && \
