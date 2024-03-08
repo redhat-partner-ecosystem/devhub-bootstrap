@@ -12,6 +12,9 @@ ENV PATH=$HOME/.local/bin/:$PATH \
 
 # removed: python39 python39-devel python39-setuptools python39-pip
 
+RUN pip list
+RUN python3.9 -m pip3 install --upgrade pip3
+
 RUN INSTALL_PKGS="git \
   unzip \
   wget \
@@ -22,8 +25,8 @@ RUN INSTALL_PKGS="git \
   yum -y clean all --enablerepo='*'
 
 # Upgrade Pip
-RUN pip list
-RUN python3.9 -m pip3 install --upgrade pip3
+#RUN pip list
+#RUN python3.9 -m pip3 install --upgrade pip3
 
 # Create a Python virtual environment for use by any application
 RUN python3.9 -m venv ${APP_ROOT} && \
